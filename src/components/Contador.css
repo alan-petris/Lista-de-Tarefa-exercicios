@@ -1,0 +1,11 @@
+.container-contador {
+    width: 120px;
+    border: 2px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    box-shadow: 4px 2px 4px rgba(65, 64, 64, 0.411);
+    padding: 10px;
+}
