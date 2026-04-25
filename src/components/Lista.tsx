@@ -99,6 +99,8 @@ export default function Lista() {
             }),
         );
     };
+
+    // Fazer alteração para gerar o commit
     const total = lista.length;
     const concluidas = lista.filter((item) => item.completed).length;
     const pendentes = total - concluidas;
