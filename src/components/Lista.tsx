@@ -1,5 +1,7 @@
 import "./Lista.css";
 import { useState } from "react";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 
 type ListaProps = {
     id: number;
@@ -26,6 +28,9 @@ export default function Lista() {
             setValorInput("");
         }
     };
+
+    const [editandoId, setEditandoId] = useState<number | null>();
+    const [valorEdicao, setValorEdicao] = useState<string>("");
 
     const removerItem = (id: number) => {
         setLista((prev) => prev.filter((item) => item.id !== id));
@@ -93,7 +98,7 @@ export default function Lista() {
         setLista((prev) =>
             prev.map((item) => {
                 if (item.id === id) {
-                    return { ...item, text: "mudei" };
+                    return { ...item, text: text };
                 }
                 return item;
             }),
@@ -107,7 +112,7 @@ export default function Lista() {
     return (
         <>
             <h2>Lista de items</h2>
-            <input
+            <Input
                 type="text"
                 name=""
                 id=""
@@ -115,52 +120,71 @@ export default function Lista() {
                 value={valorInput}
                 onChange={(e) => setValorInput(e.target.value)}
             />
-            <button onClick={handleAdd}>Add</button>
+            <Button onClick={handleAdd}>Add</Button>
 
             <div>
                 <p>Filtros disponíveis</p>
-                <button onClick={() => setFiltro("concluidas")}>
+                <Button onClick={() => setFiltro("concluidas")}>
                     Concluídas {concluidas}
-                </button>
-                <button onClick={() => setFiltro("pendentes")}>
+                </Button>
+                <Button onClick={() => setFiltro("pendentes")}>
                     Pendentes {pendentes}
-                </button>
-                <button onClick={() => setFiltro("todas")}>
+                </Button>
+                <Button onClick={() => setFiltro("todas")}>
                     Todas {total}
-                </button>
+                </Button>
             </div>
 
             <p>Filtro atual: {filtro}</p>
-            <button onClick={limparConcluidas}>Excluir completas</button>
-            <button onClick={concluirTodas}>Concluir todas tarefas</button>
-            <button onClick={alternarTodas}>Alternar Todas</button>
-            <button onClick={resetarTodas}>Resetar todas</button>
-            <button onClick={marcarDoisPrimeiros}>Marcar 2 primeiros</button>
+            <Button onClick={limparConcluidas}>Excluir completas</Button>
+            <Button onClick={concluirTodas}>Concluir todas tarefas</Button>
+            <Button onClick={alternarTodas}>Alternar Todas</Button>
+            <Button onClick={resetarTodas}>Resetar todas</Button>
+            <Button onClick={marcarDoisPrimeiros}>Marcar 2 primeiros</Button>
             <div className="container-lista">
                 <ul>
                     <p>Tarefas: {listaFiltrada.length}</p>
                     {listaFiltrada.map((item) => (
                         <li key={item.id}>
-                            <span
-                                style={{
-                                    textDecoration: item.completed
-                                        ? "line-through"
-                                        : "none",
+                            {editandoId === item.id ? (
+                                <Input
+                                    type="text"
+                                    value={valorEdicao}
+                                    onChange={(e) =>
+                                        setValorEdicao(e.target.value)
+                                    }
+                                />
+                            ) : (
+                                <span
+                                    style={{
+                                        textDecoration: item.completed
+                                            ? "line-through"
+                                            : "none",
+                                    }}
+                                >
+                                    {item.text}
+                                </span>
+                            )}
+
+                            <Button onClick={() => removerItem(item.id)}>
+                                Excluir
+                            </Button>
+                            <Button onClick={() => toggleConcluido(item.id)}>
+                                Concluir
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    if (editandoId === item.id) {
+                                        editarTarefa(item.id, valorEdicao);
+                                        setEditandoId(null);
+                                    } else {
+                                        setEditandoId(item.id);
+                                        setValorEdicao(item.text);
+                                    }
                                 }}
                             >
-                                {item.text}
-                            </span>
-                            <button onClick={() => removerItem(item.id)}>
-                                Excluir
-                            </button>
-                            <button onClick={() => toggleConcluido(item.id)}>
-                                Concluir
-                            </button>
-                            <button
-                                onClick={() => editarTarefa(item.id, item.text)}
-                            >
-                                Editar
-                            </button>
+                                {editandoId === item.id ? "Salvar" : "Editar"}
+                            </Button>
                         </li>
                     ))}
                 </ul>
